@@ -40,3 +40,27 @@ def test_cube2cartesian_pointy_top():
     x, y = cube2cartesian_pointy_top(-2, 2, 0)
     assert x == approx(- 4 * outer2inner_radius(1))
     assert y == approx(0)
+
+
+def test_cube_odd_col():
+    from hexgrid.conversions import cube2odd_col_offset, odd_col_offset2cube
+    x, y, z = 1, -2, 1
+
+    row, col = cube2odd_col_offset(x, y, z)
+    res_x, res_y, res_z = odd_col_offset2cube(row, col)
+
+    assert res_x == x
+    assert res_y == y
+    assert res_z == z
+
+
+def test_cube_event_q():
+    from hexgrid.conversions import cube2even_col_offset, even_col_offset2cube
+    x, y, z = 1, -2, 1
+
+    row, col = cube2even_col_offset(x, y, z)
+    res_x, res_y, res_z = even_col_offset2cube(row, col)
+
+    assert res_x == x
+    assert res_y == y
+    assert res_z == z
