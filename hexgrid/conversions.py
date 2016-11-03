@@ -23,6 +23,13 @@ def cube2cartesian_flat_top(cube_x, cube_y, cube_z):
     return cartesian_x, cartesian_y
 
 
+def cartesian2cube_pointy_top(cartesian_x, cartesian_y):
+    cube_x = cartesian_x / np.sqrt(3) + cartesian_y / 3
+    cube_z = - 2 / 3 * cartesian_y
+
+    return cube_x, -cube_x - cube_z, cube_z
+
+
 def outer2inner_radius(outer_radius):
     return 0.5 * np.sqrt(3) * outer_radius
 
