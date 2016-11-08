@@ -8,7 +8,7 @@ from .conversions import (
 
 
 class HexPoints:
-    def __init__(self, x, y, z, orientation='pointy_top'):
+    def __init__(self, x=(), y=(), z=(), orientation='pointy_top'):
         if orientation not in ('pointy_top', 'flat_top'):
             raise ValueError('orientation must be "pointy_top" or "flat_top"')
         self.orientation = orientation
