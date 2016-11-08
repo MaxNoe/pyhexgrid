@@ -8,8 +8,8 @@ def test_append():
 
     h = append(h1, h2)
     assert len(h) == 2
-    assert h.cube.shape == (2, 3)
-    assert np.all(h.cube == np.array([[1, 0, -1], [-1, 0, 1]]))
+    assert h.points.shape == (2, 3)
+    assert np.all(h.points == np.array([[1, 0, -1], [-1, 0, 1]]))
 
 
 def test_concatenate():
@@ -20,5 +20,5 @@ def test_concatenate():
 
     h = concatenate(h1, h2, h3)
     assert len(h) == 3
-    assert h.cube.shape == (3, 3)
-    assert np.all(h.cube == np.array([[1, 0, -1], [-1, 0, 1], [-1, 2, -1]]))
+    assert h.points.shape == (3, 3)
+    assert np.all(h.points == np.array([[1, 0, -1], [-1, 0, 1], [-1, 2, -1]]))

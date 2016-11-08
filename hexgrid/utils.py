@@ -44,10 +44,10 @@ def cube_round(hexpoints):
 
 
 def append(hexpoints1, hexpoints2):
-    points = np.append(hexpoints1.cube, hexpoints2.cube, axis=0)
+    points = np.append(hexpoints1.points, hexpoints2.points, axis=0)
     return HexPoints.from_points(points)
 
 
 def concatenate(*args):
-    points = np.concatenate([hexpoints.cube for hexpoints in args], axis=0)
+    points = np.concatenate([hexpoints.points for hexpoints in args], axis=0)
     return HexPoints.from_points(points)

@@ -13,25 +13,25 @@ class HexPoints:
             raise ValueError('orientation must be "pointy_top" or "flat_top"')
         self.orientation = orientation
 
-        self.cube = np.array([x, y, z])
-        if self.cube.ndim == 1:
-            self.cube.shape = (1, 3)
+        self.points = np.array([x, y, z])
+        if self.points.ndim == 1:
+            self.points.shape = (1, 3)
         else:
-            self.cube = self.cube.T
+            self.points = self.points.T
 
-        if not np.isclose(np.sum(self.cube), 0):
+        if not np.isclose(np.sum(self.points), 0):
             raise ValueError('Cube coordinates do not add up to 0')
 
     def __add__(self, other):
         if self.orientation != other.orientation:
             raise ValueError('HexPoints have different orientations')
-        cube = self.cube + other.cube
+        cube = self.points + other.points
         return self.__class__.from_points(cube)
 
     def __sub__(self, other):
         if self.orientation != other.orientation:
             raise ValueError('HexPoints have different orientations')
-        cube = self.cube - other.cube
+        cube = self.points - other.points
         return self.__class__.from_points(cube)
 
     @classmethod
@@ -56,21 +56,21 @@ class HexPoints:
     @property
     def x(self):
         if len(self) > 0:
-            return self.cube[:, 0]
+            return self.points[:, 0]
         else:
             return np.array([])
 
     @property
     def y(self):
         if len(self) > 0:
-            return self.cube[:, 1]
+            return self.points[:, 1]
         else:
             return np.array([])
 
     @property
     def z(self):
         if len(self) > 0:
-            return self.cube[:, 2]
+            return self.points[:, 2]
         else:
             return np.array([])
 
@@ -101,23 +101,23 @@ class HexPoints:
         return cube2cartesian_flat_top(self.x, self.y, self.z)
 
     def __len__(self):
-        return self.cube.shape[0]
+        return self.points.shape[0]
 
     def __repr__(self):
         np.set_printoptions(threshold=5)
         s = self.__class__.__name__ + '({},\n{}\n)'.format(
-            self.orientation, self.cube
+            self.orientation, self.points
         )
         np.set_printoptions()
         return s
 
     def __getitem__(self, sl):
         other = self.__class__([], [], [])
-        cube = self.cube[sl]
+        cube = self.points[sl]
         if cube.ndim == 1:
             cube.shape = (1, 3)
-        other.cube = cube
+        other.points = cube
         return other
 
     def __eq__(self, other):
-        return np.all(self.cube == other.cube, axis=1)
+        return np.all(self.points == other.points, axis=1)

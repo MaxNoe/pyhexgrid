@@ -4,7 +4,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import RegularPolygon
 
 
-def plot_hexagons_cube(
+def plot_hexagons(
         hexpoints,
         ax=None,
         facecolor=None,
