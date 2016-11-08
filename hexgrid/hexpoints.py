@@ -34,6 +34,18 @@ class HexPoints:
         cube = self.points - other.points
         return self.__class__.from_points(cube)
 
+    def __mul__(self, number):
+        if not np.isscalar(number):
+            raise TypeError('HexPoints coordinates can only be multiplied by scalars')
+        points = self.points * number
+        return self.__class__.from_points(points)
+
+    def __rmul__(self, number):
+        return self.__mul__(number)
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
     @classmethod
     def from_points(cls, points, orientation='pointy_top'):
         cube = np.array(points)
