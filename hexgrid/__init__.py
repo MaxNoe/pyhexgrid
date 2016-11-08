@@ -3,43 +3,53 @@ import numpy as np
 from .conversions import (
     cube2even_row_offset, cube2odd_row_offset,
     even_row_offset2cube, odd_row_offset2cube,
+    cube2cartesian_pointy_top, cube2cartesian_flat_top
 )
 
 
-class PointyTopHex:
-    def __init__(self, x, y, z):
+class HexPoints:
+    def __init__(self, x, y, z, orientation='pointy_top'):
+        if orientation not in ('pointy_top', 'flat_top'):
+            raise ValueError('orientation must be "pointy_top" or "flat_top"')
+        self.orientation = orientation
+
         self.cube = np.array([x, y, z])
         if self.cube.ndim == 1:
             self.cube.shape = (1, 3)
         else:
             self.cube = self.cube.T
+
         assert np.sum(self.cube) == 0, 'Cube coordinates do not add up to 0'
 
     def __add__(self, other):
+        if self.orientation != other.orientation:
+            raise ValueError('HexPoints have different orientations')
         cube = self.cube + other.cube
         return self.__class__.from_array(cube)
 
     def __sub__(self, other):
+        if self.orientation != other.orientation:
+            raise ValueError('HexPoints have different orientations')
         cube = self.cube - other.cube
         return self.__class__.from_array(cube)
 
     @classmethod
-    def from_array(cls, cube):
-        return cls(cube[:, 0], cube[:, 1], cube[:, 2])
+    def from_array(cls, cube, orientation='pointy_top'):
+        return cls(cube[:, 0], cube[:, 1], cube[:, 2], orientation=orientation)
 
     @classmethod
     def from_even_row_offset(cls, row, col):
         x, y, z = even_row_offset2cube(row, col)
-        return cls(x, y, z)
+        return cls(x, y, z, orientation='pointy_top')
 
     @classmethod
     def from_odd_row_offset(cls, row, col):
         x, y, z = odd_row_offset2cube(row, col)
-        return cls(x, y, z)
+        return cls(x, y, z, orientation='pointy_top')
 
     @classmethod
-    def from_axial(cls, x, z):
-        return cls(x, -x - z, z)
+    def from_axial(cls, x, z, orientation='pointy_top'):
+        return cls(x, -x - z, z, orientation=orientation)
 
     @property
     def x(self):
@@ -64,6 +74,12 @@ class PointyTopHex:
     @property
     def axial(self):
         return self.array[0], self.array[2]
+
+    @property
+    def cartesian(self):
+        if self.orientation == 'pointy_top':
+            return cube2cartesian_pointy_top(self.x, self.y, self.z)
+        return cube2cartesian_flat_top(self.x, self.y, self.z)
 
     def __len__(self):
         return self.cube.shape[0]
@@ -91,3 +107,17 @@ class PointyTopHex:
 
     def __eq__(self, other):
         return np.all(self.cube == other.cube, axis=1)
+
+
+DIRECTIONS = HexPoints.from_array(np.array([
+    (1, -1, 0),
+    (1, 0, -1),
+    (0, 1, -1),
+    (-1, 1, 0),
+    (-1, 0, 1),
+    (0, -1, 1)
+]))
+
+
+def get_neighbors(hexpoints):
+    return [h + DIRECTIONS for h in hexpoints]
