@@ -26,16 +26,17 @@ class HexPoints:
         if self.orientation != other.orientation:
             raise ValueError('HexPoints have different orientations')
         cube = self.cube + other.cube
-        return self.__class__.from_array(cube)
+        return self.__class__.from_points(cube)
 
     def __sub__(self, other):
         if self.orientation != other.orientation:
             raise ValueError('HexPoints have different orientations')
         cube = self.cube - other.cube
-        return self.__class__.from_array(cube)
+        return self.__class__.from_points(cube)
 
     @classmethod
-    def from_array(cls, cube, orientation='pointy_top'):
+    def from_points(cls, points, orientation='pointy_top'):
+        cube = np.array(points)
         return cls(cube[:, 0], cube[:, 1], cube[:, 2], orientation=orientation)
 
     @classmethod
@@ -104,14 +105,9 @@ class HexPoints:
 
     def __repr__(self):
         np.set_printoptions(threshold=5)
-        if len(self.cube.shape) == 1:
-            s = self.__class__.__name__ + '({}, x={}, y={}, z={})'.format(
-                self.orientation, self.x, self.y, self.z
-            )
-        else:
-            s = self.__class__.__name__ + '({},\n  x={},\n  y={},\n  z={}\n)'.format(
-                self.orientation, self.x, self.y, self.z
-            )
+        s = self.__class__.__name__ + '({},\n{}\n)'.format(
+            self.orientation, self.cube
+        )
         np.set_printoptions()
         return s
 
@@ -127,14 +123,14 @@ class HexPoints:
         return np.all(self.cube == other.cube, axis=1)
 
 
-DIRECTIONS = HexPoints.from_array(np.array([
+DIRECTIONS = HexPoints.from_points([
     (1, -1, 0),
     (1, 0, -1),
     (0, 1, -1),
     (-1, 1, 0),
     (-1, 0, 1),
     (0, -1, 1)
-]))
+])
 
 
 def get_neighbors(hexpoints):
