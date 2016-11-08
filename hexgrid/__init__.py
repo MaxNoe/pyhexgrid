@@ -19,7 +19,8 @@ class HexPoints:
         else:
             self.cube = self.cube.T
 
-        assert np.sum(self.cube) == 0, 'Cube coordinates do not add up to 0'
+        if not np.isclose(np.sum(self.cube), 0):
+            raise ValueError('Cube coordinates do not add up to 0')
 
     def __add__(self, other):
         if self.orientation != other.orientation:
@@ -53,22 +54,39 @@ class HexPoints:
 
     @property
     def x(self):
-        return self.cube[:, 0]
+        if len(self) > 0:
+            return self.cube[:, 0]
+        else:
+            return np.array([])
 
     @property
     def y(self):
-        return self.cube[:, 1]
+        if len(self) > 0:
+            return self.cube[:, 1]
+        else:
+            return np.array([])
 
     @property
     def z(self):
-        return self.cube[:, 2]
+        if len(self) > 0:
+            return self.cube[:, 2]
+        else:
+            return np.array([])
 
     @property
     def even_row_offset(self):
+        if self.orientation == 'flat_top':
+            raise NotImplemented(
+                'Even row offset coordinates not valid for flat_top orientation'
+            )
         return cube2even_row_offset(self.x, self.y, self.z)
 
     @property
     def odd_row_offset(self):
+        if self.orientation == 'flat_top':
+            raise NotImplemented(
+                'Even row offset coordinates not valid for flat_top orientation'
+            )
         return cube2odd_row_offset(self.x, self.y, self.z)
 
     @property
@@ -87,12 +105,12 @@ class HexPoints:
     def __repr__(self):
         np.set_printoptions(threshold=5)
         if len(self.cube.shape) == 1:
-            s = self.__class__.__name__ + '(x={}, y={}, z={})'.format(
-                self.x, self.y, self.z
+            s = self.__class__.__name__ + '({}, x={}, y={}, z={})'.format(
+                self.orientation, self.x, self.y, self.z
             )
         else:
-            s = self.__class__.__name__ + '(\n  x={},\n  y={},\n  z={}\n)'.format(
-                self.x, self.y, self.z
+            s = self.__class__.__name__ + '({},\n  x={},\n  y={},\n  z={}\n)'.format(
+                self.orientation, self.x, self.y, self.z
             )
         np.set_printoptions()
         return s
