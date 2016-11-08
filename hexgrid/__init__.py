@@ -80,3 +80,11 @@ class PointyTopHex:
             )
         np.set_printoptions()
         return s
+
+    def __getitem__(self, sl):
+        other = self.__class__([], [], [])
+        cube = self.cube[sl]
+        if cube.ndim == 1:
+            cube.shape = (1, 3)
+        other.cube = cube
+        return other
