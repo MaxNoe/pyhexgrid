@@ -1,10 +1,27 @@
 import numpy as np
 
+from .hexpoints import HexPoints
 
-def cube_round(x, y, z):
+
+DIRECTIONS = HexPoints.from_points([
+    (1, -1, 0),
+    (1, 0, -1),
+    (0, 1, -1),
+    (-1, 1, 0),
+    (-1, 0, 1),
+    (0, -1, 1)
+])
+
+
+def get_neighbors(hexpoints):
+    return [h + DIRECTIONS for h in hexpoints]
+
+
+def cube_round(hexpoints):
     ''' Round cube coordinates to nearest hexagon center '''
-    for a in (x, y, z):
-        a = np.asanyarray(a)
+    x = hexpoints.x
+    y = hexpoints.y
+    z = hexpoints.z
 
     rx = np.round(x)
     ry = np.round(y)
@@ -23,4 +40,4 @@ def cube_round(x, y, z):
     mask3 = np.logical_not(mask2)
     rz[mask3] = -rx[mask3] - ry[mask3]
 
-    return rx, ry, rz
+    return HexPoints(rx, ry, rz)
