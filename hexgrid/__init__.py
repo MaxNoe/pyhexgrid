@@ -88,3 +88,6 @@ class PointyTopHex:
             cube.shape = (1, 3)
         other.cube = cube
         return other
+
+    def __eq__(self, other):
+        return np.all(self.cube == other.cube, axis=1)
