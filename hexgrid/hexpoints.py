@@ -2,7 +2,9 @@ import numpy as np
 
 from .conversions import (
     cube2even_row_offset, cube2odd_row_offset,
+    cube2even_col_offset, cube2odd_col_offset,
     even_row_offset2cube, odd_row_offset2cube,
+    even_col_offset2cube, odd_col_offset2cube,
     cube2cartesian_pointy_top, cube2cartesian_flat_top
 )
 
@@ -18,6 +20,7 @@ class HexPoints:
             self.points.shape = (1, 3)
         else:
             self.points = self.points.T
+
 
         if not np.isclose(np.sum(self.points), 0):
             raise ValueError('Cube coordinates do not add up to 0')
@@ -52,14 +55,24 @@ class HexPoints:
         return cls(cube[:, 0], cube[:, 1], cube[:, 2], orientation=orientation)
 
     @classmethod
-    def from_even_row_offset(cls, row, col):
-        x, y, z = even_row_offset2cube(row, col)
+    def from_even_row_offset(cls, col, row):
+        x, y, z = even_row_offset2cube(col, row)
         return cls(x, y, z, orientation='pointy_top')
 
     @classmethod
-    def from_odd_row_offset(cls, row, col):
-        x, y, z = odd_row_offset2cube(row, col)
+    def from_odd_row_offset(cls, col, row):
+        x, y, z = odd_row_offset2cube(col, row)
         return cls(x, y, z, orientation='pointy_top')
+
+    @classmethod
+    def from_even_col_offset(cls, col, row):
+        x, y, z = even_col_offset2cube(col, row)
+        return cls(x, y, z, orientation='flat_top')
+
+    @classmethod
+    def from_odd_col_offset(cls, col, row):
+        x, y, z = odd_col_offset2cube(col, row)
+        return cls(x, y, z, orientation='flat_top')
 
     @classmethod
     def from_axial(cls, x, z, orientation='pointy_top'):
@@ -101,6 +114,22 @@ class HexPoints:
                 'Even row offset coordinates not valid for flat_top orientation'
             )
         return cube2odd_row_offset(self.x, self.y, self.z)
+
+    @property
+    def even_col_offset(self):
+        if self.orientation == 'pointy_top':
+            raise NotImplemented(
+                'Even row offset coordinates not valid for pointy_top orientation'
+            )
+        return cube2even_col_offset(self.x, self.y, self.z)
+
+    @property
+    def odd_col_offset(self):
+        if self.orientation == 'pointy_top':
+            raise NotImplemented(
+                'Even row offset coordinates not valid for pointy_top orientation'
+            )
+        return cube2odd_col_offset(self.x, self.y, self.z)
 
     @property
     def axial(self):

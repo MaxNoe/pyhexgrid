@@ -44,55 +44,56 @@ def axial2cube(x, y, z):
 
 def cube2even_col_offset(x, y, z):
     col = x
-    row = z + (x + (x & 1)) / 2
+    row = z + (x + (x & 1)) // 2
 
     return col, row
 
 
 def even_col_offset2cube(col, row):
     x = col
-    z = row - (col + (col & 1)) / 2
+    z = row - (col + (col & 1)) // 2
     y = -x - z
     return x, y, z
 
 
 def cube2odd_col_offset(x, y, z):
     col = x
-    row = z + (x - (x & 1)) / 2
+    row = z + (x - (x & 1)) // 2
 
     return col, row
 
 
 def odd_col_offset2cube(col, row):
     x = col
-    z = row - (col - (col & 1)) / 2
+    z = row - (col - (col & 1)) // 2
     y = -x - z
     return x, y, z
 
 
 def cube2even_row_offset(x, y, z):
-    col = x + (z + (z & 1)) / 2
+    col = x + (z + (z & 1)) // 2
     row = z
 
     return col, row
 
 
 def even_row_offset2cube(col, row):
-    x = col - (row + (row & 1)) / 2
+    x = col - (row + (row & 1)) // 2
     z = row
     y = -x - z
     return x, y, z
 
 
 def cube2odd_row_offset(x, y, z):
-    col = x + (z - (z & 1)) / 2
+    print(x, y, z)
+    col = x + (z - (z & 1)) // 2
     row = z
 
     return col, row
 
 
 def odd_row_offset2cube(col, row):
-    x = col - (row - (row & 1)) / 2
+    x = col - (row - (row & 1)) // 2
     z = row
     y = -x - z
     return x, y, z
