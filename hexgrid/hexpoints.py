@@ -21,7 +21,6 @@ class HexPoints:
         else:
             self.points = self.points.T
 
-
         if not np.isclose(np.sum(self.points), 0):
             raise ValueError('Cube coordinates do not add up to 0')
 
@@ -133,7 +132,7 @@ class HexPoints:
 
     @property
     def axial(self):
-        return self.array[0], self.array[2]
+        return self.points[:, 0], self.points[:, 2]
 
     @property
     def cartesian(self):
