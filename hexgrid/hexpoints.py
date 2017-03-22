@@ -152,10 +152,13 @@ class HexPoints:
 
     def __repr__(self):
         np.set_printoptions(threshold=5)
-        s = self.__class__.__name__ + '({},\n{}\n)'.format(
-            self.orientation, self.points
-        )
-        np.set_printoptions()
+        s = self.__class__.__name__
+        s += '({},\n'.format(self.orientation)
+
+        with pd.option_context('display.max_rows', 6):
+            s += '\n'.join(str(self.data.reset_index()).splitlines()[:-2])
+
+        s += '\n)'
         return s
 
     def __getitem__(self, sl):
