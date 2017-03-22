@@ -12,6 +12,7 @@ setup(
     version='0.0.1',
     install_requires=[
         'numpy',
+        'pandas',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>=3.0.0'],

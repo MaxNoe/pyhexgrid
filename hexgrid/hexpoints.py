@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from .conversions import (
     cube2even_row_offset, cube2odd_row_offset,
@@ -10,7 +11,7 @@ from .conversions import (
 
 
 class HexPoints:
-    def __init__(self, x=(), y=(), z=(), orientation='pointy_top'):
+    def __init__(self, x=(), y=(), z=(), data=None, orientation='pointy_top'):
         if orientation not in ('pointy_top', 'flat_top'):
             raise ValueError('orientation must be "pointy_top" or "flat_top"')
         self.orientation = orientation
@@ -23,6 +24,8 @@ class HexPoints:
 
         if not np.isclose(np.sum(self.points), 0):
             raise ValueError('Cube coordinates do not add up to 0')
+
+        self.data = data
 
     def __add__(self, other):
         if self.orientation != other.orientation:
@@ -49,33 +52,37 @@ class HexPoints:
         return self.__add__(other)
 
     @classmethod
-    def from_points(cls, points, orientation='pointy_top'):
+    def from_points(cls, points, orientation='pointy_top', data=None):
         cube = np.array(points)
-        return cls(cube[:, 0], cube[:, 1], cube[:, 2], orientation=orientation)
+        return cls(
+            cube[:, 0], cube[:, 1], cube[:, 2],
+            orientation=orientation,
+            data=data,
+        )
 
     @classmethod
-    def from_even_row_offset(cls, col, row):
+    def from_even_row_offset(cls, col, row, data=None):
         x, y, z = even_row_offset2cube(col, row)
-        return cls(x, y, z, orientation='pointy_top')
+        return cls(x, y, z, orientation='pointy_top', data=data)
 
     @classmethod
-    def from_odd_row_offset(cls, col, row):
+    def from_odd_row_offset(cls, col, row, data=None):
         x, y, z = odd_row_offset2cube(col, row)
-        return cls(x, y, z, orientation='pointy_top')
+        return cls(x, y, z, orientation='pointy_top', data=data)
 
     @classmethod
-    def from_even_col_offset(cls, col, row):
+    def from_even_col_offset(cls, col, row, data=None):
         x, y, z = even_col_offset2cube(col, row)
-        return cls(x, y, z, orientation='flat_top')
+        return cls(x, y, z, orientation='flat_top', data=data)
 
     @classmethod
-    def from_odd_col_offset(cls, col, row):
+    def from_odd_col_offset(cls, col, row, data=None):
         x, y, z = odd_col_offset2cube(col, row)
-        return cls(x, y, z, orientation='flat_top')
+        return cls(x, y, z, orientation='flat_top', data=data)
 
     @classmethod
-    def from_axial(cls, x, z, orientation='pointy_top'):
-        return cls(x, -x - z, z, orientation=orientation)
+    def from_axial(cls, x, z, orientation='pointy_top', data=None):
+        return cls(x, -x - z, z, orientation=orientation, data=data)
 
     @property
     def x(self):
@@ -157,7 +164,21 @@ class HexPoints:
         if cube.ndim == 1:
             cube.shape = (1, 3)
         other.points = cube
+        other.data = self.data.loc[other._data_index]
         return other
 
     def __eq__(self, other):
         return np.all(self.points == other.points, axis=1)
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, df):
+        df = pd.DataFrame(df, index=self._data_index)
+        self._data = df
+
+    @property
+    def _data_index(self):
+        return pd.MultiIndex.from_arrays([self.x, self.z], names=['x', 'z'])

@@ -10,6 +10,8 @@ def plot_hexagons(
         facecolor=None,
         edgecolor=None,
         linewidth=None,
+        key=None,
+        cmap=None,
         ):
 
     ax = ax or plt.gca()
@@ -27,12 +29,16 @@ def plot_hexagons(
 
     collection = PatchCollection(hexagons)
 
-    if facecolor:
+    if facecolor is not None:
         collection.set_facecolor(facecolor)
-    if edgecolor:
+    if edgecolor is not None:
         collection.set_edgecolor(edgecolor)
-    if linewidth:
+    if linewidth is not None:
         collection.set_linewidth(linewidth)
+
+    if key is not None:
+        collection.set_array(hexpoints.data[key])
+        collection.set_cmap(plt.get_cmap(cmap))
 
     ax.add_collection(collection)
     ax.set_xlim(np.min(x) - 1, np.max(x) + 1)
