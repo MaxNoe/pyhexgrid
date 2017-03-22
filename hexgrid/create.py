@@ -1,7 +1,9 @@
 from .utils import DIRECTIONS, concatenate
+from .hexpoints import HexPoints
 
 
-def create_ring(center, radius):
+def create_ring(radius, center=None):
+    center = center or HexPoints(0, 0, 0)
 
     if radius == 0:
         return center
@@ -16,7 +18,8 @@ def create_ring(center, radius):
     return concatenate(*points)
 
 
-def create_spiral(center, max_radius):
+def create_spiral(max_radius, center=None):
+    center = center or HexPoints(0, 0, 0)
     return concatenate(*[
         create_ring(center, radius) for radius in range(max_radius)
     ])
