@@ -50,19 +50,51 @@ def cube_round(hexpoints):
     )
 
 
+def concatenate(iterable):
+    '''
+    Concatenate an iterable of HexPoints.
+
+    Parameter
+    ---------
+
+    iterable: iterable of HexPoints
+        The points to concatenate
+
+    Returns
+    -------
+    conc: HexPoints
+        The concatenated points
+    '''
+    iterable = list(iterable)
+
+    if len(set(p.orientation for p in iterable)) > 1:
+        raise ValueError('All HexPoints must have the same orientation')
+
+    points = np.concatenate([p.points for p in iterable], axis=0)
+    data = pd.concat([p.data for p in iterable])
+    return HexPoints.from_points(
+        points,
+        orientation=iterable[0].orientation,
+        data=data,
+    )
+
+
 def append(hexpoints1, hexpoints2):
-    assert hexpoints1.orientation == hexpoints2.orientation
-    points = np.append(hexpoints1.points, hexpoints2.points, axis=0)
+    '''
+    Append two instances of HexPoints.
 
-    new = HexPoints.from_points(points, orientation=hexpoints1.orientation)
-    new.data = hexpoints1.data.append(hexpoints2.data)
+    Parameter
+    ---------
 
-    return new
+    hexpoints1: HexPoints
+        first instance
+    hexpoints2: HexPoints
+        second instance
 
+    Returns
+    -------
+    conc: HexPoints
+        The concatenated points
+    '''
 
-def concatenate(*args):
-    assert all(args[0].orientation == p.orientation for p in args)
-
-    points = np.concatenate([hexpoints.points for hexpoints in args], axis=0)
-    data = pd.concat([hexpoints.data for hexpoints in args])
-    return HexPoints.from_points(points, orientation=args[0].orientation)
+    return concatenate([hexpoints1, hexpoints2])

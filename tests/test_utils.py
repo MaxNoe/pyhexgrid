@@ -18,7 +18,7 @@ def test_concatenate():
     h2 = HexPoints(-1, 0, 1)
     h3 = HexPoints(-1, 2, -1)
 
-    h = concatenate(h1, h2, h3)
+    h = concatenate([h1, h2, h3])
     assert len(h) == 3
     assert h.points.shape == (3, 3)
     assert np.all(h.points == np.array([[1, 0, -1], [-1, 0, 1], [-1, 2, -1]]))
