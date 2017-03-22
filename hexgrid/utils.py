@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from .hexpoints import HexPoints
 
@@ -42,17 +43,26 @@ def cube_round(hexpoints):
     mask3 = np.logical_not(mask2)
     rz[mask3] = -rx[mask3] - ry[mask3]
 
-    return HexPoints(rx, ry, rz)
+    return HexPoints(
+        rx, ry, rz,
+        data=hexpoints.data,
+        orientation=hexpoints.orientation,
+    )
 
 
 def append(hexpoints1, hexpoints2):
     assert hexpoints1.orientation == hexpoints2.orientation
     points = np.append(hexpoints1.points, hexpoints2.points, axis=0)
-    return HexPoints.from_points(points, orientation=hexpoints1.orientation)
+
+    new = HexPoints.from_points(points, orientation=hexpoints1.orientation)
+    new.data = hexpoints1.data.append(hexpoints2.data)
+
+    return new
 
 
 def concatenate(*args):
     assert all(args[0].orientation == p.orientation for p in args)
 
     points = np.concatenate([hexpoints.points for hexpoints in args], axis=0)
+    data = pd.concat([hexpoints.data for hexpoints in args])
     return HexPoints.from_points(points, orientation=args[0].orientation)
