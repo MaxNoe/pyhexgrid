@@ -31,19 +31,19 @@ class HexPoints:
         if self.orientation != other.orientation:
             raise ValueError('HexPoints have different orientations')
         cube = self.points + other.points
-        return self.__class__.from_points(cube)
+        return self.__class__.from_points(cube, orientation=self.orientation)
 
     def __sub__(self, other):
         if self.orientation != other.orientation:
             raise ValueError('HexPoints have different orientations')
         cube = self.points - other.points
-        return self.__class__.from_points(cube)
+        return self.__class__.from_points(cube, orientation=self.orientation)
 
     def __mul__(self, number):
         if not np.isscalar(number):
             raise TypeError('HexPoints coordinates can only be multiplied by scalars')
         points = self.points * number
-        return self.__class__.from_points(points)
+        return self.__class__.from_points(points, orientation=self.orientation)
 
     def __rmul__(self, number):
         return self.__mul__(number)
@@ -162,7 +162,7 @@ class HexPoints:
         return s
 
     def __getitem__(self, sl):
-        other = self.__class__([], [], [])
+        other = self.__class__([], [], [], orientation=self.orientation)
         cube = self.points[sl]
         if cube.ndim == 1:
             cube.shape = (1, 3)

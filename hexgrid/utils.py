@@ -2,19 +2,21 @@ import numpy as np
 
 from .hexpoints import HexPoints
 
-
-DIRECTIONS = HexPoints.from_points([
-    (1, -1, 0),
-    (1, 0, -1),
-    (0, 1, -1),
-    (-1, 1, 0),
-    (-1, 0, 1),
-    (0, -1, 1)
-])
+DIRECTIONS = {
+    orientation: HexPoints.from_points([
+        (1, -1, 0),
+        (1, 0, -1),
+        (0, 1, -1),
+        (-1, 1, 0),
+        (-1, 0, 1),
+        (0, -1, 1)
+    ], orientation=orientation)
+    for orientation in ('flat_top', 'pointy_top')
+}
 
 
 def get_neighbors(hexpoints):
-    return [h + DIRECTIONS for h in hexpoints]
+    return [h + DIRECTIONS[h.orientation] for h in hexpoints]
 
 
 def cube_round(hexpoints):
@@ -44,10 +46,13 @@ def cube_round(hexpoints):
 
 
 def append(hexpoints1, hexpoints2):
+    assert hexpoints1.orientation == hexpoints2.orientation
     points = np.append(hexpoints1.points, hexpoints2.points, axis=0)
-    return HexPoints.from_points(points)
+    return HexPoints.from_points(points, orientation=hexpoints1.orientation)
 
 
 def concatenate(*args):
+    assert all(args[0].orientation == p.orientation for p in args)
+
     points = np.concatenate([hexpoints.points for hexpoints in args], axis=0)
-    return HexPoints.from_points(points)
+    return HexPoints.from_points(points, orientation=args[0].orientation)
