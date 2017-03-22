@@ -176,8 +176,11 @@ class HexPoints:
 
     @data.setter
     def data(self, df):
-        df = pd.DataFrame(df, index=self._data_index)
-        self._data = df
+        if isinstance(df, pd.DataFrame):
+            self._data = df.set_index(self._data_index)
+        else:
+            df = pd.DataFrame(df, index=self._data_index)
+            self._data = df
 
     @property
     def _data_index(self):

@@ -9,7 +9,7 @@ setup(
     author_email='maximilian.noethe@tu-dortmund.de',
     license='MIT',
     packages=['hexgrid'],
-    version='0.1.0',
+    version='0.1.1',
     install_requires=[
         'numpy',
         'pandas',
