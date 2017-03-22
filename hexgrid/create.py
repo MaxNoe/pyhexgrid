@@ -19,7 +19,7 @@ def create_ring(radius, center=None, orientation=None):
             points.append(current_point)
             current_point = current_point + direction
 
-    return concatenate(*points)
+    return concatenate(points)
 
 
 def create_spiral(max_radius, center=None, orientation=None):
@@ -30,6 +30,6 @@ def create_spiral(max_radius, center=None, orientation=None):
     else:
         orientation = center.orientation
 
-    return concatenate(*[
+    return concatenate([
         create_ring(radius, center=center) for radius in range(max_radius)
     ])
