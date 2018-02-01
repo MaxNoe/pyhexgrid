@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-points = create_spiral(HexPoints(0, 0, 0), 4)
+points = create_spiral(max_radius=4, center=HexPoints(0, 0, 0))
 
 plot_hexagons(points, edgecolor='k', linewidth=4, facecolor='lightgray')
 
